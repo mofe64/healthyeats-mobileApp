@@ -13,3 +13,5 @@ const Switch = createSwitchNavigator(
         initialRouteName: 'auth'
     }
 )
+
+export default createAppContainer(Switch);

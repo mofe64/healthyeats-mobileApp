@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import OnboardingComponent from './components/Onboarding';
 import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
+import AplicationContainer from './navigation/SwitchNavigator';
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -32,7 +33,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       {!onBoarded && <OnboardingComponent onDoneFunction={onBoardingComplete} />}
-      {onBoarded && <Text>Welcome</Text>}
+      {onBoarded && <AplicationContainer/>}
     </View>
   );
  
