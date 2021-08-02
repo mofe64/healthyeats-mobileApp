@@ -5,6 +5,8 @@ const Logo = require('../../assets/Logo.png')
 import { greenPrimary } from '../../constants/Colors';
 import { primaryFont, primaryFontBold } from '../../constants/Fonts';
 import FormInput from '../../components/FormInput';
+import GradientButton from 'react-native-gradient-buttons';
+
 const RegisterScreen = ({ toggleFunction = f => f }) => {
 
     return (
@@ -16,17 +18,24 @@ const RegisterScreen = ({ toggleFunction = f => f }) => {
                     <Text style={styles.logoSecondaryText}>Deliver Favorite Food</Text>
                 </View>
                 <Text style={styles.primaryText}>Sign Up For Free</Text>
-                <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : "height"} 
-                >
-                    <View style={styles.form}>
-                        <FormInput iconName='person-outline' placeHolder="Username" />
-                        <FormInput iconName='mail-outline' placeHolder='Email'/>
-                        <FormInput iconName='lock-closed-outline' placeHolder='Password'/>
-                    </View>
-                </KeyboardAvoidingView>
+                <View style={styles.form}>
+                    <FormInput iconName='person-outline' placeHolder="Username" />
+                    <FormInput iconName='mail-outline' placeHolder='Email'/>
+                    <FormInput iconName='lock-closed-outline' placeHolder='Password'/>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <GradientButton
+                        style={styles.button}
+                        text='Register'
+                        gradientBegin="#53E88B"
+                        gradientEnd="#15BE77"
+                        radius={15}
+                        impact
+                        onPressAction={()=>{console.log("login")}}
+                    />
+                </View>
                 <TouchableWithoutFeedback onPress={toggleFunction}>
-                    <Text>already have an account?</Text>
+                    <Text style={ styles.link}>already have an account?</Text>
                 </TouchableWithoutFeedback>
             </ImageBackground>
         </TouchableWithoutFeedback>
@@ -62,6 +71,20 @@ const styles = StyleSheet.create({
     form: {
         marginTop: 10,
         width: '100%'
+    },
+    link: {
+        color: greenPrimary,
+        textDecorationLine: 'underline',
+        textDecorationColor: greenPrimary,
+        paddingVertical: 10,
+        fontSize: 16
+    },
+    buttonContainer: {
+        marginVertical: 10
+    },
+    button: {
+        width: 157,
+        height: 57,
     },
 });
 
