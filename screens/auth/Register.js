@@ -4,11 +4,16 @@ const image = require('../../assets/Pattern.png')
 const Logo = require('../../assets/Logo.png')
 import { greenPrimary } from '../../constants/Colors';
 import { primaryFont, primaryFontBold } from '../../constants/Fonts';
-import FormInput from '../../components/FormInput';
+import FormInputWithIcon from '../../components/FormInputWithIcon';
 import GradientButton from 'react-native-gradient-buttons';
 
-const RegisterScreen = ({ toggleFunction = f => f }) => {
-
+const RegisterScreen = ({navigation}) => {
+    const goToLogin = () => {
+        navigation.navigate('LOGIN')
+    }
+    const goToBio = () => {
+        navigation.navigate('BIO');
+    }
     return (
         <TouchableWithoutFeedback onPress={()=>{Keyboard.dismiss()}}>
             <ImageBackground source={image} resizeMode={'cover'} style={styles.container}>
@@ -19,9 +24,9 @@ const RegisterScreen = ({ toggleFunction = f => f }) => {
                 </View>
                 <Text style={styles.primaryText}>Sign Up For Free</Text>
                 <View style={styles.form}>
-                    <FormInput iconName='person-outline' placeHolder="Username" />
-                    <FormInput iconName='mail-outline' placeHolder='Email'/>
-                    <FormInput iconName='lock-closed-outline' placeHolder='Password'/>
+                    <FormInputWithIcon iconName='person-outline' placeHolder="Username" />
+                    <FormInputWithIcon iconName='mail-outline' placeHolder='Email'/>
+                    <FormInputWithIcon iconName='lock-closed-outline' placeHolder='Password'/>
                 </View>
                 <View style={styles.buttonContainer}>
                     <GradientButton
@@ -31,10 +36,10 @@ const RegisterScreen = ({ toggleFunction = f => f }) => {
                         gradientEnd="#15BE77"
                         radius={15}
                         impact
-                        onPressAction={()=>{console.log("login")}}
+                        onPressAction={goToBio}
                     />
                 </View>
-                <TouchableWithoutFeedback onPress={toggleFunction}>
+                <TouchableWithoutFeedback onPress={goToLogin}>
                     <Text style={ styles.link}>already have an account?</Text>
                 </TouchableWithoutFeedback>
             </ImageBackground>

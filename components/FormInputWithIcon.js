@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { greenPrimary } from '../constants/Colors'
 import { primaryFont, primaryFontBold } from '../constants/Fonts';
 
-const FormInput = ({ iconName = 'person-outline', size = 24, color = greenPrimary, placeHolder='input'}) => {
+const FormInputWithIcon = ({ iconName = 'person-outline', size = 24, color = greenPrimary, placeHolder='input'}) => {
     const [value, setValue] = useState('');
 
     return (
@@ -38,4 +38,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default FormInput;
+export default FormInputWithIcon;

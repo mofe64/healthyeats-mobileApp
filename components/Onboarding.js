@@ -1,5 +1,5 @@
 import React,{ useRef } from 'react';
-import {Image,View,StyleSheet,Text,Button,TouchableNativeFeedback } from 'react-native';
+import {Image,View,StyleSheet,Text,TouchableNativeFeedback } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 import GradientButton from 'react-native-gradient-buttons';
 
@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
         marginBottom: 30,
         marginTop: 30,
         paddingBottom:0,
-        backgroundColor: 'red',
         width: '100%',
         height: '50%'
     },

@@ -4,10 +4,13 @@ const image = require('../../assets/Pattern.png')
 const Logo = require('../../assets/Logo.png')
 import { greenPrimary } from '../../constants/Colors';
 import { primaryFont, primaryFontBold } from '../../constants/Fonts';
-import FormInput from '../../components/FormInput';
+import FormInputWithIcon from '../../components/FormInputWithIcon';
 import GradientButton from 'react-native-gradient-buttons';
 
-const LoginScreen = ({toggleFunction=f=>f}) => {
+const LoginScreen = ({ navigation }) => {
+    const goToRegister = () => {
+        navigation.navigate('REGISTER')
+    }
     return (
         <TouchableWithoutFeedback onPress={()=>{Keyboard.dismiss()}}>
             <ImageBackground source={image} resizeMode={'cover'} style={styles.container}>
@@ -18,8 +21,8 @@ const LoginScreen = ({toggleFunction=f=>f}) => {
                 </View>
                 <Text style={styles.primaryText}>Login To Your Account</Text>
                 <View style={styles.form}>
-                    <FormInput iconName='person-outline' placeHolder='Username'/>
-                    <FormInput iconName='lock-closed-outline' placeHolder='Password'/>
+                    <FormInputWithIcon iconName='person-outline' placeHolder='Username'/>
+                    <FormInputWithIcon iconName='lock-closed-outline' placeHolder='Password'/>
                 </View>
                 <View style={styles.buttonContainer}>
                     <GradientButton
@@ -35,7 +38,7 @@ const LoginScreen = ({toggleFunction=f=>f}) => {
                 <TouchableWithoutFeedback>
                     <Text style={styles.link} >Forgot Your Password?</Text>
                 </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={toggleFunction}>
+                <TouchableWithoutFeedback onPress={goToRegister}>
                     <Text style={styles.link}>Create An Account?</Text>
                 </TouchableWithoutFeedback>
             </ImageBackground>

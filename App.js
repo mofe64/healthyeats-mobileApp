@@ -1,11 +1,13 @@
+import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import OnboardingComponent from './components/Onboarding';
 import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
-import AplicationContainer from './navigation/SwitchNavigator';
+import AppNavigator from './navigation/AppNavigator';
 
+import { NavigationContainer } from '@react-navigation/native';
 const fetchFonts = () => {
   return Font.loadAsync({
     'BentonSansRegular': require('./assets/fonts/BentonSansRegular.otf'),
@@ -31,10 +33,11 @@ export default function App() {
       );
     }
   return (
-    <View style={styles.container}>
+    <NavigationContainer>
       {!onBoarded && <OnboardingComponent onDoneFunction={onBoardingComplete} />}
-      {onBoarded && <AplicationContainer/>}
-    </View>
+      {onBoarded && <AppNavigator/>}
+    </NavigationContainer>
+    
   );
  
 }
