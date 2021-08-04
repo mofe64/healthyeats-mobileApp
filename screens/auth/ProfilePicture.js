@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { primaryFontBold, primaryFont } from '../../constants/Fonts';
 import * as ImagePicker from 'expo-image-picker';
 import GradientButton from 'react-native-gradient-buttons';
+import { UserContext } from '../../util/contextStore';
 
 const BackgroundPattern = require('../../assets/MinPattern.png');
 const GalleryIcon = require('../../assets/Gallery.png');

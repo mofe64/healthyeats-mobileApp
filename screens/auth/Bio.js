@@ -1,23 +1,52 @@
 import React,{useState, useContext} from 'react';
-import { View, StyleSheet, Text,KeyboardAvoidingView,TouchableWithoutFeedback, TextInput, ImageBackground, Keyboard} from 'react-native';
+import { View, StyleSheet, Text,KeyboardAvoidingView,TouchableWithoutFeedback, ImageBackground, Keyboard} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { primaryFontBold, primaryFont } from '../../constants/Fonts';
 import { greenPrimary } from '../../constants/Colors';
 import GradientButton from 'react-native-gradient-buttons';
-import { UserContext } from '../../navigation/AuthStack';
+import FormInput from '../../components/FormInput';
+import { UserContext } from '../../util/contextStore';
 
 
 const BackgroundPattern = require('../../assets/MinPattern.png');
 
 const BioForm = ({ navigation }) => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [mobileNumber, setMobileNumeber] = useState('');
+    const { secondStage, userDetailsState } = useContext(UserContext);
+    const starterDetails = {
+        firstname: userDetailsState['firstname'],
+        lastname: userDetailsState['lastname'],
+    }
+    const [details, setDetails] = useState(starterDetails);
+    const [firstnameStatus, setFirstNameStatus] = useState(false);
+    const [lastnameStatus, setLastNameStatus] = useState(false);
+    const [formValid, setFormValid] = useState(false);
 
-    const { secondStage, userDetails } = useContext(UserContext);
-    console.log("Second stage")
-    console.log(userDetails);
+    // console.log(userDetailsState);
 
+    const updateDetails = (key, value) => {
+        const updatedDetails = { ...details };
+        updatedDetails[key] = value;
+        setDetails(updatedDetails);
+    }
+
+    const changeFormValidity = (key, validityStatus) => {
+        let firstNameValid = firstnameStatus;
+        let lastNameValid = lastnameStatus;
+        if (key === 'firstname') {
+            setFirstNameStatus(validityStatus)
+            firstNameValid = validityStatus
+        }
+        if (key === 'lastname') {
+            setLastNameStatus(validityStatus);
+            lastNameValid = validityStatus;
+        }
+
+        if (firstNameValid && lastNameValid) {
+            setFormValid(true);
+        } else {
+            setFormValid(false);
+        }
+    }
     const goBack = () => {
         navigation.goBack();
     };
@@ -26,11 +55,11 @@ const BioForm = ({ navigation }) => {
     }
 
     const submit = () => {
-        secondStage();
+        secondStage(details);
+        goToProfilePicker();
     }
     
     return (
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={50} style={styles.screen}>
             <TouchableWithoutFeedback onPress={()=>{Keyboard.dismiss()}}>
                 <ImageBackground source={BackgroundPattern} resizeMode='cover' style={styles.container}>
                     <View style={styles.backButtonContainer}>
@@ -45,9 +74,22 @@ const BioForm = ({ navigation }) => {
                         <Text style={styles.headerTextSecondary}>This data will be used to build your profile</Text>
                     </View>
                     <View style={styles.form}>
-                        <TextInput style={styles.formInput} placeholder='First Name' value={firstName} onChange={setFirstName }/>
-                        <TextInput style={styles.formInput} placeholder='Last Name'value={lastName} onChangeText={setLastName} />
-                        <TextInput style={styles.formInput} placeholder='Mobile Number' value={mobileNumber} onChangeText={setMobileNumeber} keyboardType='number-pad' />
+                        <FormInput
+                            updateFunction={updateDetails}
+                            fieldType='string'
+                            fieldKey='firstname'
+                            placeHolder='Firstname'
+                            formValidityUpdateFunc={changeFormValidity}
+                            defaultValue={details['firstname']}
+                        />
+                        <FormInput
+                            updateFunction={updateDetails}
+                            fieldType='string'
+                            fieldKey='lastname'
+                            placeHolder='Lastname'
+                            formValidityUpdateFunc={changeFormValidity}
+                            defaultValue={details['lastname']}
+                        />
                     </View>
                     <View style={styles.buttonContainer}>
                         <GradientButton
@@ -57,25 +99,20 @@ const BioForm = ({ navigation }) => {
                             gradientEnd="#15BE77"
                             radius={15}
                             impact
-                            onPressAction={goToProfilePicker}
+                            onPressAction={submit}
                         />
                     </View>
                 </ImageBackground>
             </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
     )
 }
 
 const styles = StyleSheet.create({
-    screen: {
+    container: {
+        width: '100%',
         flex: 1,
         paddingVertical: 50,
         paddingHorizontal: 30,
-
-    },
-    container: {
-        width: '100%',
-        flex: 1
     },
     backButtonContainer: {
         marginTop: 20,
@@ -107,34 +144,20 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     formInputContainer: {
-        width:'100%',
-    },
-    formInput: {
-        paddingLeft: 10,
-        width: 347,
-        height: 61,
-        borderWidth: 1,
-        borderRadius: 15,
-        borderColor: greenPrimary,
-        marginVertical: 10,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.23,
-        shadowRadius: 2.63,
-        elevation: 4,
+        width: '100%',
     },
     buttonContainer: {
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 250
+        position: 'absolute',
+        bottom: 85,
+        left: 30,
     },
     button: {
         width: 157,
         height: 57,
+
     },
 })
 export default BioForm;

@@ -5,6 +5,7 @@ import LoginScreen from '../screens/auth/Login ';
 import BioForm from '../screens/auth/Bio';
 import ProfilePhotoPicker from '../screens/auth/ProfilePicture';
 import RegistrationComplete from '../screens/auth/RegistrationComplete';
+import { UserContext } from '../util/contextStore';
 
 export const RegistrationActions = {
     FIRST_STAGE: 'FIRST_STAGE',
@@ -13,7 +14,7 @@ export const RegistrationActions = {
 }
 
 const authenticationStack = createNativeStackNavigator();
-export const UserContext = React.createContext();
+
 const AuthStack = () => {
     const [state, dispatch] = useReducer(
         (prevState, action) => {
@@ -45,7 +46,6 @@ const AuthStack = () => {
             password: '',
             firstname: '',
             lastname: '',
-            mobileNumber: '',
             profile: ''
         }
     );
@@ -56,12 +56,12 @@ const AuthStack = () => {
                 dispatch({ type: RegistrationActions.FIRST_STAGE, username: data.username, email: data.email, password: data.password });
             },
             secondStage: data => {
-                dispatch({ type: RegistrationActions.SECOND_STAGE, firstname: data.firstname, lastname: data.lastname, mobile: data.mobile });
+                dispatch({ type: RegistrationActions.SECOND_STAGE, firstname: data.firstname, lastname: data.lastname });
             },
             thirdStage: data => {
                 dispatch({ type: RegistrationActions.THIRD_STAGE, profilePicture: data.profile })
             },
-            userDetails: state
+            userDetailsState: state
         }),
         [state]
     );

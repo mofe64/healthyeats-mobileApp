@@ -6,13 +6,14 @@ import { greenPrimary } from '../../constants/Colors';
 import { primaryFontBold } from '../../constants/Fonts';
 import FormInputWithIcon from '../../components/FormInputWithIcon';
 import GradientButton from 'react-native-gradient-buttons';
-import { UserContext } from '../../navigation/AuthStack';
+import { UserContext } from '../../util/contextStore';
 
 const RegisterScreen = ({ navigation }) => {
+    const { firstStage, userDetailsState } = useContext(UserContext);
     const UserDetails = {
-        username: '',
-        email: '',
-        password: ''
+        username: userDetailsState['username'],
+        email: userDetailsState['email'],
+        password: userDetailsState['password']
     }
 
     const [userInfo, setUserInfo] = useState(UserDetails);
@@ -21,8 +22,8 @@ const RegisterScreen = ({ navigation }) => {
     const [passwordStatus, setPasswordStatus] = useState(false);
     const [formValid, setFormValid] = useState(false);
 
-    const { firstStage, userDetails } = useContext(UserContext);
-    console.log(userDetails);
+    // console.log(userInfo);
+    // console.log(userDetailsState);
 
     const updateUserDetails = (key, value) => {
         const updatedUserDetails = { ...userInfo };
@@ -82,6 +83,7 @@ const RegisterScreen = ({ navigation }) => {
                             updateFunction={updateUserDetails}
                             fieldType='string'
                             formValidityUpdateFunc={changeFormValidity}
+                            defaultValue={userInfo['username']}
                         />
                         <FormInputWithIcon
                             iconName='mail-outline'
@@ -90,6 +92,7 @@ const RegisterScreen = ({ navigation }) => {
                             updateFunction={updateUserDetails}
                             fieldType='email'
                             formValidityUpdateFunc={changeFormValidity}
+                            defaultValue={userInfo['email']}
                         />
                         <FormInputWithIcon
                             iconName='lock-closed-outline'
@@ -98,6 +101,7 @@ const RegisterScreen = ({ navigation }) => {
                             updateFunction={updateUserDetails}
                             fieldType='password'
                             formValidityUpdateFunc={changeFormValidity}
+                            defaultValue={userInfo['password']}
                         />
                 </View>
                 <View style={styles.buttonContainer}>
