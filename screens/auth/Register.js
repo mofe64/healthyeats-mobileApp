@@ -1,20 +1,71 @@
-import React,{useState} from 'react';
+import React,{useState, useContext} from 'react';
 import { ImageBackground, View, Image, TouchableWithoutFeedback , StyleSheet, Text, Platform, KeyboardAvoidingView, Keyboard} from 'react-native';
 const image = require('../../assets/Pattern.png')
 const Logo = require('../../assets/Logo.png')
 import { greenPrimary } from '../../constants/Colors';
-import { primaryFont, primaryFontBold } from '../../constants/Fonts';
+import { primaryFontBold } from '../../constants/Fonts';
 import FormInputWithIcon from '../../components/FormInputWithIcon';
 import GradientButton from 'react-native-gradient-buttons';
+import { UserContext } from '../../navigation/AuthStack';
 
-const RegisterScreen = ({navigation}) => {
+const RegisterScreen = ({ navigation }) => {
+    const UserDetails = {
+        username: '',
+        email: '',
+        password: ''
+    }
+
+    const [userInfo, setUserInfo] = useState(UserDetails);
+    const [userNameStatus, setUserNameStatus] = useState(false);
+    const [emailStatus, setEmailStatus] = useState(false);
+    const [passwordStatus, setPasswordStatus] = useState(false);
+    const [formValid, setFormValid] = useState(false);
+
+    const { firstStage, userDetails } = useContext(UserContext);
+    console.log(userDetails);
+
+    const updateUserDetails = (key, value) => {
+        const updatedUserDetails = { ...userInfo };
+        updatedUserDetails[key] = value;
+        setUserInfo(updatedUserDetails);
+    }
+
+    const changeFormValidity = (key, validityStatus) => {
+        let userNameValid = userNameStatus;
+        let emailValid = emailStatus;
+        let passwordValid = passwordStatus;
+        if (key === 'username') {
+            setUserNameStatus(validityStatus)
+            userNameValid = validityStatus;
+        }
+        if (key === 'email') {
+            setEmailStatus(validityStatus)
+            emailValid = validityStatus;
+        }
+        if (key === 'password') {
+            setPasswordStatus(validityStatus);
+            passwordValid = validityStatus;
+        }
+        if (userNameValid && emailValid && passwordValid) {
+            setFormValid(true);
+        } else {
+            setFormValid(false);
+        }
+    }
+
     const goToLogin = () => {
         navigation.navigate('LOGIN')
     }
     const goToBio = () => {
         navigation.navigate('BIO');
     }
+    const submit = () => {
+        firstStage(userInfo);
+        goToBio();
+    }
+    
     return (
+        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={50} style={styles.screen}>
         <TouchableWithoutFeedback onPress={()=>{Keyboard.dismiss()}}>
             <ImageBackground source={image} resizeMode={'cover'} style={styles.container}>
                 <View style={styles.logoContainer}>
@@ -24,9 +75,30 @@ const RegisterScreen = ({navigation}) => {
                 </View>
                 <Text style={styles.primaryText}>Sign Up For Free</Text>
                 <View style={styles.form}>
-                    <FormInputWithIcon iconName='person-outline' placeHolder="Username" />
-                    <FormInputWithIcon iconName='mail-outline' placeHolder='Email'/>
-                    <FormInputWithIcon iconName='lock-closed-outline' placeHolder='Password'/>
+                        <FormInputWithIcon
+                            iconName='person-outline'
+                            placeHolder="Username"
+                            fieldKey='username'
+                            updateFunction={updateUserDetails}
+                            fieldType='string'
+                            formValidityUpdateFunc={changeFormValidity}
+                        />
+                        <FormInputWithIcon
+                            iconName='mail-outline'
+                            placeHolder='Email'
+                            fieldKey='email'
+                            updateFunction={updateUserDetails}
+                            fieldType='email'
+                            formValidityUpdateFunc={changeFormValidity}
+                        />
+                        <FormInputWithIcon
+                            iconName='lock-closed-outline'
+                            placeHolder='Password'
+                            passwordField fieldKey='password'
+                            updateFunction={updateUserDetails}
+                            fieldType='password'
+                            formValidityUpdateFunc={changeFormValidity}
+                        />
                 </View>
                 <View style={styles.buttonContainer}>
                     <GradientButton
@@ -36,7 +108,9 @@ const RegisterScreen = ({navigation}) => {
                         gradientEnd="#15BE77"
                         radius={15}
                         impact
-                        onPressAction={goToBio}
+                        onPressAction={submit}
+                        disabledGradientEnd='#D3D3D3'
+                        disabled={!formValid}
                     />
                 </View>
                 <TouchableWithoutFeedback onPress={goToLogin}>
@@ -44,22 +118,28 @@ const RegisterScreen = ({navigation}) => {
                 </TouchableWithoutFeedback>
             </ImageBackground>
         </TouchableWithoutFeedback>
-       
+        </KeyboardAvoidingView>
     )
 }
 
 const styles = StyleSheet.create({
+    screen: {
+        flex: 1,
+        height: '100%',
+        backgroundColor: 'white'
+    },
     container: {
         paddingTop: '20%',
-        flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
-        width: '100%'
+        width: '100%',
+        height: '100%'
+    
     },
     logoContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 20
+        marginBottom: 10
     },
     logoPrimaryText: {
         color: greenPrimary,
@@ -75,7 +155,7 @@ const styles = StyleSheet.create({
     },
     form: {
         marginTop: 10,
-        width: '100%'
+        width: '100%',
     },
     link: {
         color: greenPrimary,

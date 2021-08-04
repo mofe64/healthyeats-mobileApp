@@ -13,6 +13,9 @@ const ProfilePhotoPicker = ({ navigation }) => {
     const goBack = () => {
         navigation.goBack();
     };
+    const completeRegistration = () => {
+        navigation.navigate("COMPLETE");
+    }
     const confirmMediaLibraryPermissions = async () => {
         if (Platform.OS !== 'web') {
             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -103,7 +106,7 @@ const ProfilePhotoPicker = ({ navigation }) => {
                     gradientEnd="#DA6317"
                     radius={15}
                     impact
-                    onPressAction={()=>{console.log('skip')}}
+                    onPressAction={completeRegistration}
                 />
                 <GradientButton
                     style={styles.button}
@@ -112,7 +115,7 @@ const ProfilePhotoPicker = ({ navigation }) => {
                     gradientEnd="#15BE77"
                     radius={15}
                     impact
-                    onPressAction={()=>{console.log('next')}}
+                    onPressAction={completeRegistration}
                 />
             </View>
         </ImageBackground>

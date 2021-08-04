@@ -1,23 +1,33 @@
-import React,{useState} from 'react';
+import React,{useState, useContext} from 'react';
 import { View, StyleSheet, Text,KeyboardAvoidingView,TouchableWithoutFeedback, TextInput, ImageBackground, Keyboard} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { primaryFontBold, primaryFont } from '../../constants/Fonts';
 import { greenPrimary } from '../../constants/Colors';
 import GradientButton from 'react-native-gradient-buttons';
+import { UserContext } from '../../navigation/AuthStack';
 
 
 const BackgroundPattern = require('../../assets/MinPattern.png');
 
 const BioForm = ({ navigation }) => {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [mobileNumber, setMobileNumeber] = useState('');
+
+    const { secondStage, userDetails } = useContext(UserContext);
+    console.log("Second stage")
+    console.log(userDetails);
+
     const goBack = () => {
         navigation.goBack();
     };
     const goToProfilePicker = () => {
         navigation.navigate('PROFILEPICTURE');
     }
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [mobileNumber, setMobileNumeber] = useState('');
+
+    const submit = () => {
+        secondStage();
+    }
     
     return (
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={50} style={styles.screen}>
@@ -103,7 +113,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         width: 347,
         height: 61,
-        borderWidth: .5,
+        borderWidth: 1,
         borderRadius: 15,
         borderColor: greenPrimary,
         marginVertical: 10,
