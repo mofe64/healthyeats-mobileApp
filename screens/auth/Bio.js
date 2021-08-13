@@ -55,6 +55,8 @@ const BioForm = ({ navigation }) => {
     }
 
     const submit = () => {
+        details['firstname'] = details['firstname'].trim();
+        details['lastname'] = details['lastname'].trim();
         secondStage(details);
         goToProfilePicker();
     }
@@ -99,7 +101,9 @@ const BioForm = ({ navigation }) => {
                             gradientEnd="#15BE77"
                             radius={15}
                             impact
+                            disabled={!formValid}
                             onPressAction={submit}
+                            
                         />
                     </View>
                 </ImageBackground>

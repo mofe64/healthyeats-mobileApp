@@ -61,6 +61,8 @@ const RegisterScreen = ({ navigation }) => {
         navigation.navigate('BIO');
     }
     const submit = () => {
+        userInfo['username'] = userInfo['username'].trim();
+        userInfo['email'] = userInfo['email'].trim();
         firstStage(userInfo);
         goToBio();
     }

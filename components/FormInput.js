@@ -47,6 +47,7 @@ const FormInput = ({
                 formValidityUpdateFunc(fieldKey, true);
             }
         }
+        newValue = newValue.trim().toLowerCase();
         updateFunction(key, newValue);
         setValue(newValue);
     }

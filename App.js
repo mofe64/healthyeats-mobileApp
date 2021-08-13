@@ -6,6 +6,7 @@ import OnboardingComponent from './components/Onboarding';
 import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import AppNavigator from './navigation/AppNavigator';
+import { startUpUrl} from './constants/Urls';
 
 import { NavigationContainer } from '@react-navigation/native';
 const fetchFonts = () => {

@@ -1,22 +1,39 @@
-import React,{useEffect} from 'react';
-import { View, StyleSheet, Text, TouchableWithoutFeedback,ImageBackground,Image, Alert, Platform } from 'react-native';
+import React,{useEffect,useState, useContext} from 'react';
+import { View, StyleSheet, Text, TouchableWithoutFeedback,ImageBackground,Image, Alert, Platform, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { primaryFontBold, primaryFont } from '../../constants/Fonts';
 import * as ImagePicker from 'expo-image-picker';
 import GradientButton from 'react-native-gradient-buttons';
 import { UserContext } from '../../util/contextStore';
+import { cloudinaryUploadPreset, cloudinaryUploadUrl} from '../../constants/Urls';
 
 const BackgroundPattern = require('../../assets/MinPattern.png');
 const GalleryIcon = require('../../assets/Gallery.png');
 const CameraIcon = require('../../assets/Camera.png');
 
+const ProceedButton = ({text, func=f=>f}) => {
+    return (
+        <GradientButton
+            style={styles.button}
+            text={text}
+            gradientBegin="#53E88B"
+            gradientEnd="#15BE77"
+            radius={15}
+            impact
+            onPressAction={func}
+        />
+    )
+}
+
 const ProfilePhotoPicker = ({ navigation }) => {
+    const { thirdStage,userDetailsState } = useContext(UserContext);
+    const [uploadResult, setUploadResult] = useState(null);
+    const [hasUploaded, setHasUploaded] = useState(false);
+    const [loading, setLoading] = useState(false);
     const goBack = () => {
         navigation.goBack();
     };
-    const completeRegistration = () => {
-        navigation.navigate("COMPLETE");
-    }
+    console.log(userDetailsState);
     const confirmMediaLibraryPermissions = async () => {
         if (Platform.OS !== 'web') {
             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -45,17 +62,63 @@ const ProfilePhotoPicker = ({ navigation }) => {
         confirmMediaLibraryPermissions();
         confirmCameraPermissions();
     }, []);
-    
+    const uploadToCloudinary = () => {
+        console.log("uploading to cloudinary")
+        const result = uploadResult;
+        if (result != null) {
+            setLoading(true);
+            let base64Image = `data:image/jpg;base64,${result.base64}`;
+            let data = {
+                "file": base64Image,
+                "upload_preset": cloudinaryUploadPreset,
+                "folder": "healthyEats/profile"
+            }
+            fetch(cloudinaryUploadUrl, {
+                body: JSON.stringify(data),
+                headers: {
+                    'content-type': 'application/json'
+                },
+                method: 'POST'
+            }).then(async r => {
+                let data = await r.json()
+                console.log(data.secure_url);
+                const imageData = {
+                    profile: data.secure_url,
+                }
+                thirdStage(imageData);
+                setLoading(false);
+            })
+                .then(() => setHasUploaded(true))
+                .catch(err => console.log(err));
+        } else {
+            Alert.alert(
+                    'Image Empty',
+                    'Please Upload An Image Before Proceeding',
+                    [{text: 'okay', style:'default',onPress: f=>f}]
+                )
+        }
+    }
+    const skip = () => {
+        navigation.navigate("COMPLETE");
+    }
+
+    const completeRegistration = () => {
+        uploadToCloudinary();
+        // navigation.navigate("COMPLETE");
+    }
+    const done = () => {
+        navigation.navigate("COMPLETE");
+    }
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [4, 3],
-            quality: 1
+            quality: 1,
+            base64: true,
         })
-        console.log(result);
         if (!result.cancelled) {
-            console.log("Got here")
+            setUploadResult(result);
         }
     };
 
@@ -66,9 +129,8 @@ const ProfilePhotoPicker = ({ navigation }) => {
             aspect: [4, 3],
             quality: 1
         });
-        console.log(result);
         if (!result.cancelled) {
-            console.log("Got here")
+            setUploadResult(result);
         }
     }
 
@@ -99,26 +161,29 @@ const ProfilePhotoPicker = ({ navigation }) => {
                     </View>
                 </TouchableWithoutFeedback>
             </View>
-            <View style={styles.buttonContainer}>
-                <GradientButton
-                    style={styles.button}
-                    text='Skip'
-                    gradientBegin="#F9A84D"
-                    gradientEnd="#DA6317"
-                    radius={15}
-                    impact
-                    onPressAction={completeRegistration}
-                />
-                <GradientButton
-                    style={styles.button}
-                    text='Next'
-                    gradientBegin="#53E88B"
-                    gradientEnd="#15BE77"
-                    radius={15}
-                    impact
-                    onPressAction={completeRegistration}
-                />
-            </View>
+            {loading ? (<ActivityIndicator size='large' color='#00ff00' />) :
+                (hasUploaded) ?
+                    (
+                        <View style={styles.buttonContainer}>
+                            <ProceedButton text='Proceed' func={done} />
+                        </View>
+                    )
+                    :
+                    (
+                        <View style={styles.buttonContainer}>
+                            <GradientButton
+                                style={styles.button}
+                                text='Skip'
+                                gradientBegin="#F9A84D"
+                                gradientEnd="#DA6317"
+                                radius={15}
+                                impact
+                                onPressAction={skip}
+                            />
+                            <ProceedButton text='upload' func={completeRegistration} />
+                        </View>
+                    )
+            }
         </ImageBackground>
     )
 }

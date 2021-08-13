@@ -1,8 +1,9 @@
-import React from 'react';
-import { View, Text, ImageBackground, StyleSheet, Image } from 'react-native';
+import React,{useContext, useState} from 'react';
+import { View, Text, ImageBackground, StyleSheet, Image, Alert } from 'react-native';
 import {primaryFont, primaryFontBold } from '../../constants/Fonts';
 import { greenPrimary } from '../../constants/Colors';
 import GradientButton from 'react-native-gradient-buttons';
+import { UserContext } from '../../util/contextStore';
 
 
 
@@ -10,7 +11,25 @@ const image = require('../../assets/Pattern.png')
 const checkMark = require('../../assets/checkMark.png');
 
 
-const RegistrationComplete = () => {
+const RegistrationComplete = ({navigation}) => {
+    const { register } = useContext(UserContext);
+    const registerComplete = () => {
+        register()
+            .then((data) => {
+            console.log(data);
+            navigation.navigate('LOGIN');
+            }).
+            catch((err) => {
+            Alert.alert(
+                'Something Went Wrong',
+                err.message,
+                [
+                    { text: 'Try Again', style: 'default', onPress: register },
+                    {text:'Cancel',style:'destructive', onPress: f=>f}
+                ]
+            )
+        })        
+    }
     return (
         <ImageBackground source={image} resizeMode='cover' style={styles.container}>
             <View style={styles.content}>
@@ -26,7 +45,7 @@ const RegistrationComplete = () => {
                     gradientEnd="#15BE77"
                     radius={15}
                     impact
-                    onPressAction={()=>{console.log("Button clicked")}}
+                    onPressAction={registerComplete}
                 />
             </View>
              
